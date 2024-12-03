@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Correo Electrónico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(30, 19, 64, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color:rgb(29, 81, 212);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #5e4caf;
+            color: rgb(255, 255, 255);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #bc2828;
+        }
+        p {
+            font-size: 14px;
+            text-align: center;
+        }
+        #mensajeValidacion {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function seleccionarLetras(cadena) {
+            let letrasElegidas = [];
+            while (letrasElegidas.length < 2) {
+                let letraAleatoria = cadena[Math.floor(Math.random() * cadena.length)];
+                if (!letrasElegidas.includes(letraAleatoria)) letrasElegidas.push(letraAleatoria);
+            }
+            return letrasElegidas.join('');
+        }
+
+        function crearCorreo() {
+            let primerNombre = document.getElementById('primerNombre').value.trim();
+            let segundoNombre = document.getElementById('segundoNombre').value.trim() || primerNombre;
+            let apellido1 = document.getElementById('apellidoPaterno').value.trim();
+            let apellido2 = document.getElementById('apellidoMaterno').value.trim() || apellido1;
+            let fechaNacimiento = document.getElementById('fechaNac').value.split('-');
+
+            let correoGenerado = seleccionarLetras(primerNombre) +
+                                    seleccionarLetras(segundoNombre) +
+                                    seleccionarLetras(apellido1) +
+                                    seleccionarLetras(apellido2) +
+                                 fechaNacimiento[Math.floor(Math.random() * 3)];
+
+            document.getElementById('correoResultado').value = (correoGenerado + '@gmail.com').toLowerCase();
+
+            // Activar el campo de la contraseña
+            document.getElementById('password').disabled = false;
+
+            // Desplazar la vista a la sección de la contraseña
+            document.getElementById('password').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function verificarContraseña() {
+            let password = document.getElementById('password').value;
+            let mensajeValidacion = document.getElementById('mensajeValidacion');
+
+            // Patrón corregido
+            let patron = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
+            let esValido = patron.test(password);
+            mensajeValidacion.style.color = esValido ? "green" : "red";
+            mensajeValidacion.textContent = esValido ? "Contraseña válida" : "Debe contener al menos 8 caracteres, una mayúscula, una minúscula, un dígito y un carácter especial";
+            return esValido;
+        }
+
+        function alternarContraseña() {
+            let tipoActual = document.getElementById('password').type === 'password' ? 'text' : 'password';
+            document.getElementById('password').type = tipoActual;
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Generador de correos electronicos</h1>
+        <form action="javascript:void(0)">
+            <label>Ingrese su 1er Nombre:</label>
+            <input type="text" id="primerNombre" required><br>
+
+            <label>Ingrese su 2do Nombre (En caso de tenerlo):</label>
+            <input type="text" id="segundoNombre"><br>
+
+            <label>Ingrese su Apellido Paterno:</label>
+            <input type="text" id="apellidoPaterno" required><br>
+
+            <label>Ingrese su Apellido Materno:</label>
+            <input type="text" id="apellidoMaterno"><br>
+
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" id="fechaNac" required><br>
+
+            <button type="button" onclick="crearCorreo()">GENERAR CORREO</button><br>
+
+            <label>Correo electronico es:</label>
+            <input type="text" id="correoResultado" readonly><br>
+
+            <label>Ingrese una contraseña:</label>
+            <input type="password" id="password" disabled required onkeyup="verificarContraseña()"><br>
+
+            <button type="button" onclick="alternarContraseña()">MOSTRAR / OCULTAR</button><br>
+
+            <p id="mensajeValidacion"></p>
+        </form>
+    </div>
+</body>
+</html>
